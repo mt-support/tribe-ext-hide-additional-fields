@@ -89,7 +89,6 @@ if (
 			$hidden_fields = get_post_meta( get_the_ID(), 'custom-hidden', true );
 			$additional_fields = tribe_get_option( 'custom-fields', false );
 			$labels = wp_list_pluck( $additional_fields, 'label', 'name' );
-			$label_index;
 
 		    if ( tribe_is_event() && $hidden_fields ) {
 		       if ( is_array( $hidden_fields ) ) {
