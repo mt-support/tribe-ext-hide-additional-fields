@@ -62,8 +62,6 @@ $events_label_singular = tribe_get_event_label_singular();
 				</td>
 				<?php include 'hidden-field.php'; ?>
 			</tr>
-		<?php endforeach; ?>CUSTOM FIELD VAR DUMP<?php $themeta = get_post_meta(get_the_ID(), 'jen-hidden', true); var_dump($themeta); echo 'END VARDUMP<br><br>'; // var_dump( $customField ); ?><br>
-		<?php $adf = tribe_get_option( 'custom-fields', false ); echo '<strong>tribe_get_option</strong>: <br>'; var_dump($adf); ?>
-		<?php echo 'tribe get option: '; $woo = tribe_get_option( 'custom-fields' ); var_dump( $woo ); ?>
+		<?php endforeach; ?>
 	</tbody>
 </table>
