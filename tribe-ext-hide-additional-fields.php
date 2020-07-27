@@ -3,7 +3,7 @@
  * Plugin Name:     Events Calendar PRO Extension: Hide Additional Fields
  * Plugin URI:      https://github.com/mt-support/tribe-ext-hide-additional-fields
  * Description:     Provides the option to hide additional fields from the front end of events
- * Version:         1.0.0
+ * Version:         1.0.1
  * Extension Class: Tribe__Extension__Hide_Additional_Fields
  * Author:          Modern Tribe, Inc.
  * Author URI:      http://m.tri.be/1971
