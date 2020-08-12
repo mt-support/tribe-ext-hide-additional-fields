@@ -33,6 +33,15 @@ if (
 	class Tribe__Extension__Hide_Additional_Fields extends Tribe__Extension {
 
 		/**
+		 * The custom field key.
+		 *
+		 * @since 1.0.1
+		 *
+		 * @var string
+		 */
+		public static $field_key = 'custom-hidden';
+
+		/**
 		 * Setup the Extension's properties.
 		 *
 		 * This always executes even if the required plugins are not present.
@@ -65,13 +74,13 @@ if (
 		}
 
 		public function save_hidden_field( $post_id ) {
-			$field_key = 'custom-hidden';
 			$fields = get_post_meta( $post_id );
 
-			if ( ! $fields['custom-hidden'] ) {
-				add_post_meta( $post_id, 'custom-hidden', 'hidden' );
+			if ( ! isset( $fields[ self::$field_key ] ) ) {
+				add_post_meta( $post_id, self::$field_key, 'hidden', true );
 			} else {
-				update_post_meta( $post_id, 'custom-hidden', $_POST['custom-hidden'] );
+				$value = tribe_get_request_var( self::$field_key, '' );
+				update_post_meta( $post_id, self::$field_key, $value );
 			}
 		}
 
@@ -86,7 +95,7 @@ if (
 		}
 
 		public function filter_additional_fields( $data ) {
-			$hidden_fields = get_post_meta( get_the_ID(), 'custom-hidden', true );
+			$hidden_fields     = get_post_meta( get_the_ID(), self::$field_key, true );
 			$additional_fields = tribe_get_option( 'custom-fields', false );
 			$labels = wp_list_pluck( $additional_fields, 'label', 'name' );
 
