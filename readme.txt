@@ -38,9 +38,10 @@ We're always interested in your feedback and our [premium forums](https://theeve
 = 1.0.1 2020-08-12 =
 
 * Tweak - Rename `tribe_filter_hidden_fields` filter to `tribe_ext_hide_additional_fields_filtered_data` to be namespaced. [EXT-202]
+* Tweak - Remove post meta entry from database if all boxes are unchecked to keep database clean. [EXT-202]
 * Fix - Protect against using `in_array()` on non-array and other "undefined index" PHP notices. [EXT-202]
 * Fix - Support hiding Additional Fields that had punctuation that gets converted to HTML entities, such as `&#039;` vs `'`. [EXT-202]
-* Fix - Remove post meta entry from database if all boxes are unchecked to keep database clean. [EXT-202]
+* Fix - Properly detect correct Post ID when saving the fields to hide during the Community Events form submission. [EXT-202]
 
 = 1.0.0 2018-06-18 =
 
