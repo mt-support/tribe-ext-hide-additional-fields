@@ -80,19 +80,54 @@ if (
 		}
 
 		public function save_hidden_field( $post_id ) {
-			$fields = get_post_meta( $post_id );
+			// For performance.
+			if (
+				wp_is_post_revision( $post_id )
+				|| (
+					defined( 'DOING_CRON' )
+					&& DOING_CRON
+				)
+			) {
+				return;
+			}
 
-			if ( ! isset( $fields[ self::$field_key ] ) ) {
-				add_post_meta( $post_id, self::$field_key, 'hidden', true );
-			} else {
-				$value = tribe_get_request_var( self::$field_key, '' );
+			$current_value = get_post_meta( $post_id, self::$field_key, true );
 
-				if ( '' === $value ) {
-					// Keep database clean.
-					delete_post_meta( $post_id, self::$field_key );
-				} else {
-					update_post_meta( $post_id, self::$field_key, $value );
-				}
+			// Cleanup after v1.0.0 possibly saving errant value.
+			if ( 'hidden' === $current_value ) {
+				$current_value = false;
+			}
+
+			$new_value = tribe_get_request_var( self::$field_key, '' );
+
+			// Keep database clean, not saving empty meta values.
+			if (
+				! empty( $current_value )
+				&& empty( $new_value )
+			) {
+				delete_post_meta( $post_id, self::$field_key );
+
+				return;
+			}
+
+			// Avoid unnecessary database writes.
+			if (
+				! empty( $current_value )
+				&& $new_value !== $current_value
+			) {
+				update_post_meta( $post_id, self::$field_key, $new_value );
+
+				return;
+			}
+
+			// Set initial value.
+			if (
+				empty( $current_value )
+				&& ! empty( $new_value )
+			) {
+				update_post_meta( $post_id, self::$field_key, $new_value );
+
+				return;
 			}
 		}
 
@@ -112,7 +147,7 @@ if (
 			$labels            = wp_list_pluck( $additional_fields, 'label', 'name' );
 
 			if ( '' === $hidden_fields ) {
-				// Keep database clean.
+				// Cleanup after v1.0.0 saving meta field as empty value.
 				delete_post_meta( get_the_ID(), self::$field_key );
 			} elseif (
 				tribe_is_event()
