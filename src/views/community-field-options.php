@@ -1,6 +1,6 @@
 <?php
 
-// adds option to hide fields to Community Events submission form
+// Support hiding Event Additional Information Fields via the Community Events add/edit form.
 
 $fields = tribe_get_option( 'custom-fields' );
 $hidden = get_post_meta( get_the_ID(), Tribe__Extension__Hide_Additional_Fields::$field_key, true );
@@ -25,7 +25,7 @@ do_action( 'tribe_before_community_hidden_fields' );
 						<input
 							type="checkbox"
 							value="<?php echo $field_name; ?>"
-							<?php checked( in_array( $field_name, $hidden ) ); //update this to check the meta ?>
+							<?php checked( is_array( $hidden ) && in_array( $field_name, $hidden ) ); //update this to check the meta ?>
 							name="<?php echo Tribe__Extension__Hide_Additional_Fields::$field_key; ?>>[]"
 						>
 						<?php echo stripslashes( $field['label'] ); ?>
