@@ -35,9 +35,11 @@ We're always interested in your feedback and our [premium forums](https://theeve
 
 == Changelog ==
 
-= 1.0.1 2020-07-27 =
+= 1.0.1 2020-08-12 =
 
-* Fix - Protect against using `in_array()` on non-array. [EXT-202]
+* Fix - Protect against using `in_array()` on non-array and other "undefined index" PHP notices. [EXT-202]
+* Fix - Support hiding Additional Fields that had punctuation that gets converted to HTML entities, such as `&#039;` vs `'`. [EXT-202]
+* Fix - Remove post meta entry from database if all boxes are unchecked to keep database clean. [EXT-202]
 
 = 1.0.0 2018-06-18 =
 

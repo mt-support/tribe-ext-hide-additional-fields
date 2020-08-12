@@ -80,7 +80,13 @@ if (
 				add_post_meta( $post_id, self::$field_key, 'hidden', true );
 			} else {
 				$value = tribe_get_request_var( self::$field_key, '' );
-				update_post_meta( $post_id, self::$field_key, $value );
+
+				if ( '' === $value ) {
+					// Keep database clean.
+					delete_post_meta( $post_id, self::$field_key );
+				} else {
+					update_post_meta( $post_id, self::$field_key, $value );
+				}
 			}
 		}
 
@@ -97,19 +103,28 @@ if (
 		public function filter_additional_fields( $data ) {
 			$hidden_fields     = get_post_meta( get_the_ID(), self::$field_key, true );
 			$additional_fields = tribe_get_option( 'custom-fields', false );
-		    if ( tribe_is_event() && $hidden_fields ) {
-		       if ( is_array( $hidden_fields ) ) {
-					foreach ( $hidden_fields as $field ) {
-						$field_label = $labels[ $field ];
-						unset( $data[ $field_label ] );
-					}
-		        	return apply_filters( 'tribe_filter_hidden_fields', $data );
-				} else {
-					return apply_filters( 'tribe_filter_hidden_fields', $data );
 			$labels            = wp_list_pluck( $additional_fields, 'label', 'name' );
 
+			if ( '' === $hidden_fields ) {
+				// Keep database clean.
+				delete_post_meta( get_the_ID(), self::$field_key );
+			} elseif (
+				tribe_is_event()
+				&& is_array( $hidden_fields )
+				&& ! empty( $hidden_fields )
+			) {
+				foreach ( $hidden_fields as $field ) {
+					// Exact match.
+					$field_label = $labels[ $field ];
+					unset( $data[ $field_label ] );
+
+					// Handle $data having HTML entities but $additional_fields being raw value, such as `&#039;` vs `'`.
+					$field_label = esc_html( $field_label );
+					unset( $data[ $field_label ] );
 				}
-		    }
+			}
+
+			return apply_filters( 'tribe_filter_hidden_fields', $data );
 		}
 
 		public function community_events_support() {
