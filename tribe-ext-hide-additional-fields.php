@@ -3,7 +3,7 @@
  * Plugin Name:     Events Calendar PRO Extension: Hide Additional Fields
  * Plugin URI:      https://github.com/mt-support/tribe-ext-hide-additional-fields
  * Description:     Provides the option to hide additional fields from the front end of events
- * Version:         1.0.0
+ * Version:         1.0.1
  * Extension Class: Tribe__Extension__Hide_Additional_Fields
  * Author:          Modern Tribe, Inc.
  * Author URI:      http://m.tri.be/1971
@@ -33,6 +33,17 @@ if (
 	class Tribe__Extension__Hide_Additional_Fields extends Tribe__Extension {
 
 		/**
+		 * The custom field key.
+		 *
+		 * @todo  Change to namespaced post meta key, such as tribe_ecp_custom_hidden or prefix with extension slug.
+		 *
+		 * @since 1.0.1
+		 *
+		 * @var string
+		 */
+		public static $field_key = 'custom-hidden';
+
+		/**
 		 * Setup the Extension's properties.
 		 *
 		 * This always executes even if the required plugins are not present.
@@ -48,30 +59,36 @@ if (
 			// Load plugin textdomain
 			load_plugin_textdomain( 'tribe-ext-hide-additional-fields', false, basename( dirname( __FILE__ ) ) . '/languages/' );
 
-			add_filter( 'tribe_events_event_meta_template', array( $this, 'override_event_fields_template' ) );
-			add_action( 'tribe_events_update_meta', 'add_hidden_meta_field' );
-			add_action( 'save_post', array( $this, 'save_hidden_field' ), 999 );
-			add_filter( 'tribe_get_custom_fields', array( $this, 'filter_additional_fields' ), 100 );
+			add_filter( 'tribe_events_event_meta_template', [ $this, 'override_event_fields_template' ] );
+			add_action( 'save_post', [ $this, 'save_hidden_field' ], 999 );
+			add_filter( 'tribe_get_custom_fields', [ $this, 'filter_additional_fields' ], 100 );
 
 			if ( class_exists( 'Tribe__Events__Community__Main' ) ) {
-				add_action( 'tribe_events_community_section_after_custom_fields', array( $this, 'community_events_support' ) );
+				add_action( 'tribe_events_community_section_after_custom_fields', [ $this, 'community_events_support' ] );
 			}
 		}
 
 		// overrides the additional fields admin view
 		public function override_event_fields_template( $events_event_meta_template ) {
 			$events_event_meta_template = plugin_dir_path( __FILE__ ) . '/src/views/event-meta.php';
+
 			return $events_event_meta_template;
 		}
 
 		public function save_hidden_field( $post_id ) {
-			$field_key = 'custom-hidden';
 			$fields = get_post_meta( $post_id );
 
-			if ( ! $fields['custom-hidden'] ) {
-				add_post_meta( $post_id, 'custom-hidden', 'hidden' );
+			if ( ! isset( $fields[ self::$field_key ] ) ) {
+				add_post_meta( $post_id, self::$field_key, 'hidden', true );
 			} else {
-				update_post_meta( $post_id, 'custom-hidden', $_POST['custom-hidden'] );
+				$value = tribe_get_request_var( self::$field_key, '' );
+
+				if ( '' === $value ) {
+					// Keep database clean.
+					delete_post_meta( $post_id, self::$field_key );
+				} else {
+					update_post_meta( $post_id, self::$field_key, $value );
+				}
 			}
 		}
 
@@ -86,21 +103,30 @@ if (
 		}
 
 		public function filter_additional_fields( $data ) {
-			$hidden_fields = get_post_meta( get_the_ID(), 'custom-hidden', true );
+			$hidden_fields     = get_post_meta( get_the_ID(), self::$field_key, true );
 			$additional_fields = tribe_get_option( 'custom-fields', false );
-			$labels = wp_list_pluck( $additional_fields, 'label', 'name' );
+			$labels            = wp_list_pluck( $additional_fields, 'label', 'name' );
 
-		    if ( tribe_is_event() && $hidden_fields ) {
-		       if ( is_array( $hidden_fields ) ) {
-					foreach ( $hidden_fields as $field ) {
-						$field_label = $labels[ $field ];
-						unset( $data[ $field_label ] );
-					}
-		        	return apply_filters( 'tribe_filter_hidden_fields', $data );
-				} else {
-					return apply_filters( 'tribe_filter_hidden_fields', $data );
+			if ( '' === $hidden_fields ) {
+				// Keep database clean.
+				delete_post_meta( get_the_ID(), self::$field_key );
+			} elseif (
+				tribe_is_event()
+				&& is_array( $hidden_fields )
+				&& ! empty( $hidden_fields )
+			) {
+				foreach ( $hidden_fields as $field ) {
+					// Exact match.
+					$field_label = $labels[ $field ];
+					unset( $data[ $field_label ] );
+
+					// Handle $data having HTML entities but $additional_fields being raw value, such as `&#039;` vs `'`.
+					$field_label = esc_html( $field_label );
+					unset( $data[ $field_label ] );
 				}
-		    }
+			}
+
+			return apply_filters( 'tribe_ext_hide_additional_fields_filtered_data', $data );
 		}
 
 		public function community_events_support() {
