@@ -57,19 +57,19 @@ if (
 			// Load plugin textdomain
 			load_plugin_textdomain( 'tribe-ext-hide-additional-fields', false, basename( dirname( __FILE__ ) ) . '/languages/' );
 
-			add_filter( 'tribe_events_event_meta_template', array( $this, 'override_event_fields_template' ) );
-			add_action( 'tribe_events_update_meta', 'add_hidden_meta_field' );
-			add_action( 'save_post', array( $this, 'save_hidden_field' ), 999 );
-			add_filter( 'tribe_get_custom_fields', array( $this, 'filter_additional_fields' ), 100 );
+			add_filter( 'tribe_events_event_meta_template', [ $this, 'override_event_fields_template' ] );
+			add_action( 'save_post', [ $this, 'save_hidden_field' ], 999 );
+			add_filter( 'tribe_get_custom_fields', [ $this, 'filter_additional_fields' ], 100 );
 
 			if ( class_exists( 'Tribe__Events__Community__Main' ) ) {
-				add_action( 'tribe_events_community_section_after_custom_fields', array( $this, 'community_events_support' ) );
+				add_action( 'tribe_events_community_section_after_custom_fields', [ $this, 'community_events_support' ] );
 			}
 		}
 
 		// overrides the additional fields admin view
 		public function override_event_fields_template( $events_event_meta_template ) {
 			$events_event_meta_template = plugin_dir_path( __FILE__ ) . '/src/views/event-meta.php';
+
 			return $events_event_meta_template;
 		}
 
@@ -97,8 +97,6 @@ if (
 		public function filter_additional_fields( $data ) {
 			$hidden_fields     = get_post_meta( get_the_ID(), self::$field_key, true );
 			$additional_fields = tribe_get_option( 'custom-fields', false );
-			$labels = wp_list_pluck( $additional_fields, 'label', 'name' );
-
 		    if ( tribe_is_event() && $hidden_fields ) {
 		       if ( is_array( $hidden_fields ) ) {
 					foreach ( $hidden_fields as $field ) {
@@ -108,6 +106,8 @@ if (
 		        	return apply_filters( 'tribe_filter_hidden_fields', $data );
 				} else {
 					return apply_filters( 'tribe_filter_hidden_fields', $data );
+			$labels            = wp_list_pluck( $additional_fields, 'label', 'name' );
+
 				}
 		    }
 		}
