@@ -54,6 +54,10 @@ if (
 
 		/**
 		 * Extension initialization and hooks.
+		 *
+		 * Note: Some of this extension's text uses other text domains (e.g. `tribe-events-calendar-pro`) because of
+		 * straight-copying and this is OK because it's used in the same context and it'll already be translated
+		 * instead of needing to be again just for this extension.
 		 */
 		public function init() {
 			// Load plugin textdomain
