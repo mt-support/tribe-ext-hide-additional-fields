@@ -126,7 +126,7 @@ if (
 				}
 			}
 
-			return apply_filters( 'tribe_filter_hidden_fields', $data );
+			return apply_filters( 'tribe_ext_hide_additional_fields_filtered_data', $data );
 		}
 
 		public function community_events_support() {
