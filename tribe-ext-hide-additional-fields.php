@@ -35,6 +35,8 @@ if (
 		/**
 		 * The custom field key.
 		 *
+		 * @todo  Change to namespaced post meta key, such as tribe_ecp_custom_hidden or prefix with extension slug.
+		 *
 		 * @since 1.0.1
 		 *
 		 * @var string
