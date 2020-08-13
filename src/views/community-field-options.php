@@ -16,7 +16,7 @@ do_action( 'tribe_before_community_hidden_fields' );
 			</colgroup>
 			<tr class="tribe-section-content-row tribe-field-type-checkbox">
 				<td class="tribe-section-content-label">
-					<label for="<?php echo Tribe__Extension__Hide_Additional_Fields::$field_key; ?>>"><?php esc_html_e( 'Hide fields:', 'tribe-ext-hide-additional-fields' ); ?></label>
+					<label for="<?php echo Tribe__Extension__Hide_Additional_Fields::$field_key; ?>"><?php esc_html_e( 'Hide fields:', 'tribe-ext-hide-additional-fields' ); ?></label>
 				</td>
 				<td class="tribe-section-content-field">
 					<?php foreach ( $fields as $field ) :
@@ -27,7 +27,7 @@ do_action( 'tribe_before_community_hidden_fields' );
 								value="<?php echo $field_name; ?>"
 								<?php checked( is_array( $hidden ) && in_array( $field_name, $hidden ) ); //update this to check the meta
 								?>
-								name="<?php echo Tribe__Extension__Hide_Additional_Fields::$field_key; ?>>[]"
+								name="<?php echo Tribe__Extension__Hide_Additional_Fields::$field_key; ?>[]"
 							>
 							<?php echo stripslashes( $field['label'] ); ?>
 						</label>
