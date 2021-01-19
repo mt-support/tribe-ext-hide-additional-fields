@@ -64,7 +64,7 @@ if (
 			load_plugin_textdomain( 'tribe-ext-hide-additional-fields', false, basename( dirname( __FILE__ ) ) . '/languages/' );
 
 			add_filter( 'tribe_events_event_meta_template', [ $this, 'override_event_fields_template' ] );
-			add_action( 'save_post', [ $this, 'save_hidden_field' ], 999 );
+			add_action( 'save_post_tribe_events', [ $this, 'save_hidden_field' ], 999 );
 			add_filter( 'tribe_get_custom_fields', [ $this, 'filter_additional_fields' ], 100 );
 
 			if ( class_exists( 'Tribe__Events__Community__Main' ) ) {
