@@ -21,7 +21,7 @@
 			$hide_field_status = checked( in_array( $field_name, $hidden, true ), true, false );
 		}
 		?>
-		<label><?php esc_html_e( 'Hide field', 'tribe-ext-hide-additional-fields' ); ?>
+		<label style="vertical-align: top; line-height: 1em;"><?php esc_html_e( 'Hide field', 'tribe-ext-hide-additional-fields' ); ?>
 			<input type="checkbox" value="<?php echo $field_name ?>" name="<?php echo Tribe__Extension__Hide_Additional_Fields::$field_key; ?>[]" <?php echo $hide_field_status ?> />
 		</label>
 	</div>
