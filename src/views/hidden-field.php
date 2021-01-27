@@ -13,7 +13,7 @@
 
 		if (
 			$start_hidden
-			&& get_post_status() == 'auto-draft'
+			&& 'auto-draft' === get_post_status()
 		) {
 			$hide_field_status = 'checked="checked"';
 		}
