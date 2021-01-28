@@ -7,9 +7,11 @@
 		/**
 		 * Allow filtering whether the checkboxes should be checked by default.
 		 *
+		 * @since 1.1.0
+		 *
 		 * @var bool $start_hidden
 		 */
-		$start_hidden = apply_filters( 'tribe_ext_hide_additional_fields_default_hidden', false );
+		$start_hidden = (booL) apply_filters( 'tribe_ext_hide_additional_fields_default_hidden', false );
 
 		if (
 			$start_hidden
