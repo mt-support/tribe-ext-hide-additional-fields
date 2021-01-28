@@ -1,12 +1,12 @@
 <?php
 /**
- * Plugin Name:     Events Calendar PRO Extension: Hide Additional Fields
+ * Plugin Name:     The Events Calendar Pro Extension: Hide Additional Fields
  * Plugin URI:      https://github.com/mt-support/tribe-ext-hide-additional-fields
- * Description:     Provides the option to hide additional fields from the front end of events
- * Version:         1.0.1
+ * Description:     Provides the option to hide additional fields from the front end of events.
+ * Version:         1.1.0
  * Extension Class: Tribe__Extension__Hide_Additional_Fields
- * Author:          Modern Tribe, Inc.
- * Author URI:      http://m.tri.be/1971
+ * Author:          The Events Calendar
+ * Author URI:      https://evnt.is/1971
  * License:         GPL version 3 or any later version
  * License URI:     https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:     tribe-ext-hide-additional-fields
@@ -64,7 +64,7 @@ if (
 			load_plugin_textdomain( 'tribe-ext-hide-additional-fields', false, basename( dirname( __FILE__ ) ) . '/languages/' );
 
 			add_filter( 'tribe_events_event_meta_template', [ $this, 'override_event_fields_template' ] );
-			add_action( 'save_post', [ $this, 'save_hidden_field' ], 999 );
+			add_action( 'save_post_tribe_events', [ $this, 'save_hidden_field' ], 999 );
 			add_filter( 'tribe_get_custom_fields', [ $this, 'filter_additional_fields' ], 100 );
 
 			if ( class_exists( 'Tribe__Events__Community__Main' ) ) {

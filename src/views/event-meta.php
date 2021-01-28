@@ -8,23 +8,24 @@ if ( empty( $customFields ) || ! is_array( $customFields ) ) {
 }
 
 $events_label_singular = tribe_get_event_label_singular();
-
 ?>
 
 <table id="event-meta" class="eventtable">
 	<colgroup>
+		<col style="width:10%; min-width: 80px;">
 		<col style="width:15%">
-		<col style="width:85%">
+		<col style="width:75%">
 	</colgroup>
 	<tbody>
 	<tr>
-		<td colspan="2" class="tribe_sectionheader">
+		<td colspan="3" class="tribe_sectionheader">
 			<h4><?php echo esc_html( sprintf( __( 'Additional %1$s Fields', 'tribe-events-calendar-pro' ), $events_label_singular ) ); ?></h4>
 		</td>
 	</tr>
 	<?php foreach ( $customFields as $customField ): ?>
 		<?php $val = get_post_meta( get_the_ID(), $customField['name'], true ) ?>
 		<tr>
+			<?php include 'hidden-field.php'; ?>
 			<td><?php echo esc_html( stripslashes( $customField['label'] ) ) ?></td>
 			<td>
 				<?php $options = explode( "\r\n", $customField['values'] ) ?>
@@ -61,7 +62,6 @@ $events_label_singular = tribe_get_event_label_singular();
 					<textarea name="<?php echo esc_attr( $customField['name'] ) ?>"><?php echo esc_textarea( $val ) ?></textarea>
 				<?php endif; ?>
 			</td>
-			<?php include 'hidden-field.php'; ?>
 		</tr>
 	<?php endforeach; ?>
 	</tbody>
